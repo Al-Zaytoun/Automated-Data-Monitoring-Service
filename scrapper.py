@@ -1,8 +1,8 @@
 import requests
+import filecmp
 from bs4 import BeautifulSoup
-"""
-Dedicated file for visiting the website, and extracting the required data
-"""
+from win11toast import toast
+
 
 TARGET_URL = "https://github.com/SimplifyJobs/Summer2026-Internships?tab=readme-ov-file"
 SWE_TABLE_ID = "user-content--software-engineering-internship-roles"
@@ -23,7 +23,7 @@ def retrieve_data(target_url):
 with open("output.txt", "r", encoding="UTF-8") as file:
     UNPARSED_DATA = file.read()
 
-def extract_data(unparsed_data):
+def parse_data(unparsed_data):
     
     soup = BeautifulSoup(unparsed_data, "html.parser")
 
@@ -44,5 +44,12 @@ def extract_data(unparsed_data):
         print(f"An unexpected error occured: {e}")
         return 
 
+def handle_notification(company, job, location):
+    toast(f"New Job Update: {company}: {job}\n{location}")
 
-extract_data(UNPARSED_DATA)
+def is_files_different(file1, file2):
+    return filecmp.cmp(file1, file2)
+
+def main():
+    
+    parse_data(UNPARSED_DATA)
